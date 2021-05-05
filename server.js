@@ -83,5 +83,17 @@ app.post('/books', (req, res) => {
   });
 });
 
+app.delete('/books/:id', (req, res) => {
+  let email = req.query.user;
+  User.find({email: email}, (err, databaseResults) => {
+    let user = databaseResults[0];
+    user.books = user.books.filter(book => `${books._id}` !== req.params.id);
+    console.log(user.books);
+    user.save().then(databaseResults => {
+      res.send(databaseResults.books);
+    })
+  });
+});
+
 
 app.listen(3001, () => console.log('listening on 3001'));
