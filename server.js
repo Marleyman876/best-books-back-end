@@ -83,9 +83,25 @@ app.post('/books', (req, res) => {
   });
 });
 
+app.put('/books/:id',(req, res)=>{
+  let email = req.body.email;
+  User.find({email: email}, (err, databaseResults) =>{
+   let user = databaseResults[0];
+   let userId = req.params.id;
+   user.books.forEach(book => {
+     if(`${book._id}` === userId){
+       book.name = req.book.name;
+       book.description = req.body.desription;
+     }
+   });
+   user.save().then(savedUserData =>{
+     res.send(savedUserData.book)
+   });  
+  });
+});
+
 app.delete('/books/:id', (req, res) => {
   let email = req.body.email;
-  console.log(email)
   User.find({email: email}, (err, databaseResults) => {
     let user = databaseResults[0];
     user.books = user.books.filter(book => `${book._id}` !== req.params.id);
