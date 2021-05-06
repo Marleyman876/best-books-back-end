@@ -13,43 +13,43 @@ const User = require('./models/User');
 const { res } = require('express');
 
 // seed the database - 5 books
-// const booksWeLove = new User({
-//   email: 'shelby.harner@gmail.com',
-//   books: [
-//     {
-//       name: 'The subtle art of not giving a F*ck',
-//       author: 'Mark Manson',
-//       description: 'A counterintuitive approach to a good life.'
-//     },
+const booksWeLove = new User({
+  email: 'grant_garfield@yahoo.com',
+  books: [
+    {
+      name: 'The subtle art of not giving a F*ck',
+      author: 'Mark Manson',
+      description: 'A counterintuitive approach to a good life.'
+    },
 
-//     {
-//       name: '48 Laws of Power',
-//       author: 'Robert Green',
-//       description: 'A moral, cunning, ruthless and instructive way to achieve power.'
-//     },
+    {
+      name: '48 Laws of Power',
+      author: 'Robert Green',
+      description: 'A moral, cunning, ruthless and instructive way to achieve power.'
+    },
 
-//     {
-//       name: 'Five Love Languages',
-//       author: 'Gary Chapman',
-//       description: 'The secret to love that lasts.'
-//     },
+    {
+      name: 'Five Love Languages',
+      author: 'Gary Chapman',
+      description: 'The secret to love that lasts.'
+    },
 
-//     {
-//       name: 'Markus Garvy: Life Lessons',
-//       author: 'Robert A. Hill',
-//       description: 'Autobiography about the man and the movement'
-//     },
+    {
+      name: 'Markus Garvy: Life Lessons',
+      author: 'Robert A. Hill',
+      description: 'Autobiography about the man and the movement'
+    },
 
-//     {
-//       name: 'The Wise Mind of H.I.M Emperor Halie Sellassie I',
-//       author: 'Asheda Dwyer',
-//       description: 'Reflections on how to develop ones self'
-//     },
-//   ]
-// });
+    {
+      name: 'The Wise Mind of H.I.M Emperor Halie Sellassie I',
+      author: 'Asheda Dwyer',
+      description: 'Reflections on how to develop ones self'
+    },
+  ]
+});
 
-// booksWeLove.save();
-// // console.log(booksWeLove);
+booksWeLove.save();
+// console.log(booksWeLove);
 
 app.get('/', (req, res) => {
   res.send('These are our cool books!');
@@ -83,11 +83,28 @@ app.post('/books', (req, res) => {
   });
 });
 
+app.put('/books/:id',(req, res)=>{
+  let email = req.body.email;
+  User.find({email: email}, (err, databaseResults) =>{
+   let user = databaseResults[0];
+   let userId = req.params.id;
+   user.books.forEach(book => {
+     if(`${book._id}` === userId){
+       book.name = req.book.name;
+       book.description = req.body.desription;
+     }
+   });
+   user.save().then(savedUserData =>{
+     res.send(savedUserData.book)
+   });  
+  });
+});
+
 app.delete('/books/:id', (req, res) => {
-  let email = req.query.user;
+  let email = req.body.email;
   User.find({email: email}, (err, databaseResults) => {
     let user = databaseResults[0];
-    user.books = user.books.filter(book => `${books._id}` !== req.params.id);
+    user.books = user.books.filter(book => `${book._id}` !== req.params.id);
     console.log(user.books);
     user.save().then(databaseResults => {
       res.send(databaseResults.books);
